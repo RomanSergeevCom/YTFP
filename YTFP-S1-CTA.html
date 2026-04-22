@@ -1,0 +1,1850 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>YTFP CTA · ТЗ для монтажа</title>
+<style>
+  :root {
+    --bg:#0b0d10; --panel:#14171c; --border:#222831; --fg:#e6e8eb;
+    --muted:#8b95a0; --accent:#60a5fa; --ok:#22c55e; --warn:#f59e0b;
+    --purple:#a78bfa; --pink:#ec4899;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:24px; font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+         background:var(--bg); color:var(--fg); font-size:14px; line-height:1.5; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  h2 { font-size:18px; margin:40px 0 16px; border-bottom:2px solid var(--border); padding-bottom:8px; }
+  h3 { font-size:16px; margin:0; }
+  h4 { font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin:16px 0 8px; }
+  .subtitle { color:var(--muted); font-size:12px; margin-bottom:8px; }
+  .notice { background:rgba(251,191,36,0.1); border:1px solid var(--warn); color:var(--warn);
+             padding:12px 16px; border-radius:6px; margin:16px 0; font-size:13px; }
+  .stats { display:flex; gap:16px; margin:16px 0 24px; }
+  .stat { padding:12px 16px; background:var(--panel); border-radius:6px; flex:1; }
+  .stat .num { font-size:20px; font-weight:600; }
+  .stat .lbl { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+
+  .variant { background:var(--panel); border-radius:8px; padding:20px; margin-bottom:24px;
+              border-left:4px solid var(--accent); }
+  .variant.var-good { border-left-color:var(--ok); }
+  .variant.var-close { border-left-color:var(--warn); }
+  .var-head { display:flex; justify-content:space-between; align-items:start; margin-bottom:8px; }
+  .var-title { display:flex; align-items:center; gap:12px; }
+  .var-id { display:inline-block; width:36px; height:36px; border-radius:50%; background:var(--accent);
+             color:var(--bg); font-weight:700; font-size:18px; text-align:center; line-height:36px; }
+  .var-good .var-id { background:var(--ok); }
+  .var-close .var-id { background:var(--warn); }
+  .var-meta { text-align:right; }
+  .var-total { font-size:24px; font-weight:600; font-family:"SF Mono",monospace; color:var(--accent); }
+  .var-good .var-total { color:var(--ok); }
+  .var-close .var-total { color:var(--warn); }
+  .var-total small { color:var(--muted); font-size:12px; font-weight:400; }
+  .var-count { font-size:11px; color:var(--muted); margin-top:2px; }
+  .var-angle { color:var(--muted); font-style:italic; margin-bottom:12px; font-size:13px; }
+
+  .picks { background:rgba(0,0,0,0.2); border-radius:6px; padding:4px; }
+  .pick { display:flex; gap:14px; padding:12px; border-bottom:1px solid var(--border); }
+  .pick:last-child { border-bottom:none; }
+  .pick-num { width:28px; height:28px; border-radius:50%; background:var(--border); color:var(--muted);
+               font-weight:600; text-align:center; line-height:28px; font-size:13px; flex-shrink:0; }
+  .pick-body { flex:1; }
+  .pick-label { font-size:11px; font-weight:700; color:var(--purple); text-transform:uppercase;
+                 letter-spacing:0.06em; margin-bottom:6px; }
+  .pick-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .speaker { font-weight:600; color:var(--accent); }
+  .role { color:var(--muted); font-size:12px; font-weight:400; }
+  .pick-dur { font-family:"SF Mono",monospace; color:var(--muted); font-size:12px; }
+  .pick-text { font-size:14px; color:var(--fg); margin-bottom:8px; padding:10px; background:rgba(0,0,0,0.3);
+                border-radius:4px; border-left:2px solid var(--accent); }
+  .pick-meta { font-size:12px; color:var(--muted); line-height:1.8; }
+  .pick-meta code { font-family:"SF Mono",monospace; background:rgba(96,165,250,0.1); padding:1px 6px;
+                     border-radius:3px; color:var(--accent); cursor:pointer; }
+  .cats-line { margin-top:4px; }
+
+  .script { padding:16px; background:rgba(96,165,250,0.08); border-radius:6px; font-size:14px; line-height:1.7; }
+  .sp-name { color:var(--accent); font-weight:600; }
+
+  table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:6px; overflow:hidden; }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; font-size:13px; }
+  th { background:#1a1f26; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover { background:#1a1f26; }
+  .score { font-family:"SF Mono",monospace; color:var(--accent); font-weight:600; }
+  .dur { font-family:"SF Mono",monospace; color:var(--muted); white-space:nowrap; }
+  .speaker-small { font-weight:600; color:var(--accent); font-size:12px; margin-bottom:2px; }
+  .role-small { font-size:11px; color:var(--muted); margin-bottom:4px; }
+  .quote-small { max-width:440px; }
+  .cat { display:inline-block; padding:2px 6px; border-radius:3px; font-size:10px; font-weight:600;
+          margin-right:3px; text-transform:uppercase; }
+  .cat-appeal { background:#dc2626; color:#fff; }
+  .cat-children { background:#f59e0b; color:#000; }
+  .cat-mission { background:#60a5fa; color:#000; }
+  .cat-emotion { background:#a78bfa; color:#000; }
+  .scene-small { font-family:"SF Mono",monospace; font-size:11px; color:var(--fg); }
+  .clip-small { font-family:"SF Mono",monospace; font-size:11px; color:var(--muted); background:none; padding:0; }
+  .src-type { font-size:10px; padding:1px 5px; border-radius:3px; }
+  .src-video { background:rgba(139,149,160,0.2); color:var(--muted); }
+  .src-A2 { background:rgba(34,197,94,0.2); color:var(--ok); }
+  .src-A3 { background:rgba(96,165,250,0.2); color:var(--accent); }
+  .src-DJI_raw { background:rgba(167,139,250,0.2); color:var(--purple); }
+  .tc { font-family:"SF Mono",monospace; font-size:11px; }
+  .tc-copy { cursor:pointer; }
+  .tc-copy:hover { color:var(--ok); }
+  .prem-small { color:var(--muted); margin-top:4px; font-size:10px; }
+</style>
+</head>
+<body>
+<h1>🎬 ТЗ на сборку CTA · YTFP-S1</h1>
+<div class="subtitle">Фонд Правмир · Ассистент Здоровья · кохлеарные импланты для детей</div>
+<div class="subtitle">Для монтажёра: готовые варианты (A-E) со спикерами, таймкодами и сценариями + каталог кандидатов</div>
+<div class="subtitle">Generated 2026-04-23 02:52 · 37 transcripts · 762 candidates · Published: <a href="https://romansergeevcom.github.io/YTFP/YTFP-S1-CTA.html" style="color:var(--accent)">github.io/YTFP/YTFP-S1-CTA.html</a></div>
+
+<div class="notice">
+  <b>Спикеры:</b> по умолчанию A2 = Роман (интервьюер), A3 = герой сцены. Исключение: сцена 01 — A2=Матвей (сын), A3=Людмила (мама).
+  Если указан неправильный спикер — проверь и поправь вручную.
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="num">5</div><div class="lbl">Готовых вариантов</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">Сцен обработано</div></div>
+  <div class="stat"><div class="num">762</div><div class="lbl">Всего кандидатов</div></div>
+  <div class="stat"><div class="num">60</div><div class="lbl">В каталоге ниже</div></div>
+</div>
+
+<h2>📦 Готовые варианты CTA</h2>
+
+<div class="variant var-good">
+  <div class="var-head">
+    <div class="var-title">
+      <span class="var-id">A</span>
+      <h3>Короткий · Прямой призыв</h3>
+    </div>
+    <div class="var-meta">
+      <div class="var-total">28.2s <small>/ 25-35 секунд</small></div>
+      <div class="var-count">3 фрагментов</div>
+    </div>
+  </div>
+  <div class="var-angle">Минималка: представились → что делаем → как помочь</div>
+
+  <h4>Порядок склейки:</h4>
+  <div class="picks">
+    
+<div class="pick">
+  <div class="pick-num">1</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ① Представление + 140 детей за 5 лет</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">14.1s</span>
+    </div>
+    <div class="pick-text">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:15.860</code> — <code class="tc-copy" title="Click to copy">00:29.920</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:15:25</code> — <code class="tc-copy" title="Click to copy">00:00:29:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>intro, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">2</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ② Призыв: куда перейти</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">7.9s</span>
+    </div>
+    <div class="pick-text">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:26.740</code> — <code class="tc-copy" title="Click to copy">01:34.600</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:26:19</code> — <code class="tc-copy" title="Click to copy">00:01:34:15</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">3</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ③ Сумма — даже 100 рублей</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.3s</span>
+    </div>
+    <div class="pick-text">перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0023.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">02:22.760</code> — <code class="tc-copy" title="Click to copy">02:29.040</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:02:22:18</code> — <code class="tc-copy" title="Click to copy">00:02:28:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <h4>Сценарий (как услышит зритель):</h4>
+  <div class="script"><span class="sp-name">Ольга Грицай:</span> "Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией."<br><br><span class="sp-name">Ольга Грицай:</span> "под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь"<br><br><span class="sp-name">Ольга Грицай:</span> "перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100"</div>
+</div>
+
+<div class="variant var-close">
+  <div class="var-head">
+    <div class="var-title">
+      <span class="var-id">B</span>
+      <h3>Средний · С контекстом</h3>
+    </div>
+    <div class="var-meta">
+      <div class="var-total">38.5s <small>/ 40-50 секунд</small></div>
+      <div class="var-count">4 фрагментов</div>
+    </div>
+  </div>
+  <div class="var-angle">Представились → почему важна реабилитация → как помочь → сумма</div>
+
+  <h4>Порядок склейки:</h4>
+  <div class="picks">
+    
+<div class="pick">
+  <div class="pick-num">1</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ① Представление + масштаб (140 детей за 5 лет)</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">14.1s</span>
+    </div>
+    <div class="pick-text">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:15.860</code> — <code class="tc-copy" title="Click to copy">00:29.920</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:15:25</code> — <code class="tc-copy" title="Click to copy">00:00:29:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>intro, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">2</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ② Что фонд делает / зачем нужна реабилитация</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">10.3s</span>
+    </div>
+    <div class="pick-text">В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">06:25.280</code> — <code class="tc-copy" title="Click to copy">06:35.540</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:06:24:26</code> — <code class="tc-copy" title="Click to copy">00:06:35:04</code></div>
+      <div class="cats-line">Нарративные роли: <i>mission, problem</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">3</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ③ Призыв: куда перейти</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">7.9s</span>
+    </div>
+    <div class="pick-text">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:26.740</code> — <code class="tc-copy" title="Click to copy">01:34.600</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:26:19</code> — <code class="tc-copy" title="Click to copy">00:01:34:15</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">4</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ④ Сумма — даже 100 рублей</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.3s</span>
+    </div>
+    <div class="pick-text">перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0023.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">02:22.760</code> — <code class="tc-copy" title="Click to copy">02:29.040</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:02:22:18</code> — <code class="tc-copy" title="Click to copy">00:02:28:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <h4>Сценарий (как услышит зритель):</h4>
+  <div class="script"><span class="sp-name">Ольга Грицай:</span> "Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией."<br><br><span class="sp-name">Ольга Грицай:</span> "В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха."<br><br><span class="sp-name">Ольга Грицай:</span> "под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь"<br><br><span class="sp-name">Ольга Грицай:</span> "перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100"</div>
+</div>
+
+<div class="variant var-good">
+  <div class="var-head">
+    <div class="var-title">
+      <span class="var-id">C</span>
+      <h3>Длинный · Полный эмоциональный арк</h3>
+    </div>
+    <div class="var-meta">
+      <div class="var-total">55.5s <small>/ 55-65 секунд</small></div>
+      <div class="var-count">6 фрагментов</div>
+    </div>
+  </div>
+  <div class="var-angle">Представились → что делает фонд → почему важно → эмоция → как помочь → сумма</div>
+
+  <h4>Порядок склейки:</h4>
+  <div class="picks">
+    
+<div class="pick">
+  <div class="pick-num">1</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ① Представление + 140 детей за 5 лет</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">14.1s</span>
+    </div>
+    <div class="pick-text">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:15.860</code> — <code class="tc-copy" title="Click to copy">00:29.920</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:15:25</code> — <code class="tc-copy" title="Click to copy">00:00:29:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>intro, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">2</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ② Что делает фонд</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">10.3s</span>
+    </div>
+    <div class="pick-text">В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">06:25.280</code> — <code class="tc-copy" title="Click to copy">06:35.540</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:06:24:26</code> — <code class="tc-copy" title="Click to copy">00:06:35:04</code></div>
+      <div class="cats-line">Нарративные роли: <i>mission, problem</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">3</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ③ Почему важна реабилитация</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">10.1s</span>
+    </div>
+    <div class="pick-text">любая сумма может оказать помощь в реабилитации детей с нарушением слуха и ваша помощь неоценимо</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0025.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:28.560</code> — <code class="tc-copy" title="Click to copy">00:38.680</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:28:15</code> — <code class="tc-copy" title="Click to copy">00:00:38:19</code></div>
+      <div class="cats-line">Нарративные роли: <i>problem, amount</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">4</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ④ Эмоциональный пик</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.9s</span>
+    </div>
+    <div class="pick-text">Благодаря этому мы охватываем не одного ребенка, а сразу нескольких детей, благодаря вашим пожертвованиям.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">03:44.380</code> — <code class="tc-copy" title="Click to copy">03:51.320</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:03:44:04</code> — <code class="tc-copy" title="Click to copy">00:03:51:02</code></div>
+      <div class="cats-line">Нарративные роли: <i>emotional, action</i> · Ключевые слова: <i>appeal, children, emotion</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">5</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ⑤ Призыв: куда перейти</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">7.9s</span>
+    </div>
+    <div class="pick-text">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:26.740</code> — <code class="tc-copy" title="Click to copy">01:34.600</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:26:19</code> — <code class="tc-copy" title="Click to copy">00:01:34:15</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">6</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ⑥ Сумма — даже 100 рублей</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.3s</span>
+    </div>
+    <div class="pick-text">перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0023.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">02:22.760</code> — <code class="tc-copy" title="Click to copy">02:29.040</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:02:22:18</code> — <code class="tc-copy" title="Click to copy">00:02:28:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <h4>Сценарий (как услышит зритель):</h4>
+  <div class="script"><span class="sp-name">Ольга Грицай:</span> "Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией."<br><br><span class="sp-name">Ольга Грицай:</span> "В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха."<br><br><span class="sp-name">Ольга Грицай:</span> "любая сумма может оказать помощь в реабилитации детей с нарушением слуха и ваша помощь неоценимо"<br><br><span class="sp-name">Ольга Грицай:</span> "Благодаря этому мы охватываем не одного ребенка, а сразу нескольких детей, благодаря вашим пожертвованиям."<br><br><span class="sp-name">Ольга Грицай:</span> "под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь"<br><br><span class="sp-name">Ольга Грицай:</span> "перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100"</div>
+</div>
+
+<div class="variant var-close">
+  <div class="var-head">
+    <div class="var-title">
+      <span class="var-id">D</span>
+      <h3>Длинный · Боль → решение</h3>
+    </div>
+    <div class="var-meta">
+      <div class="var-total">48.1s <small>/ 50-60 секунд</small></div>
+      <div class="var-count">5 фрагментов</div>
+    </div>
+  </div>
+  <div class="var-angle">Начинаем с проблемы (без реабилитации), потом представление фонда → призыв → сумма</div>
+
+  <h4>Порядок склейки:</h4>
+  <div class="picks">
+    
+<div class="pick">
+  <div class="pick-num">1</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ① Проблема: что будет без реабилитации</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">10.3s</span>
+    </div>
+    <div class="pick-text">В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">06:25.280</code> — <code class="tc-copy" title="Click to copy">06:35.540</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:06:24:26</code> — <code class="tc-copy" title="Click to copy">00:06:35:04</code></div>
+      <div class="cats-line">Нарративные роли: <i>mission, problem</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">2</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ② Кто мы: 140 детей за 5 лет</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">14.1s</span>
+    </div>
+    <div class="pick-text">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:15.860</code> — <code class="tc-copy" title="Click to copy">00:29.920</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:15:25</code> — <code class="tc-copy" title="Click to copy">00:00:29:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>intro, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">3</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ③ Как мы помогаем</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">9.6s</span>
+    </div>
+    <div class="pick-text">И наш фонд за 5 лет оказал помощь в реабилитации более 140 детей по реабилитации после кохлярной имплантации.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:27.600</code> — <code class="tc-copy" title="Click to copy">01:37.200</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:27:15</code> — <code class="tc-copy" title="Click to copy">00:01:37:03</code></div>
+      <div class="cats-line">Нарративные роли: <i>mission, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">4</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ④ Призыв: куда перейти</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">7.9s</span>
+    </div>
+    <div class="pick-text">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:26.740</code> — <code class="tc-copy" title="Click to copy">01:34.600</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:26:19</code> — <code class="tc-copy" title="Click to copy">00:01:34:15</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">5</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ⑤ Сумма — даже 100 рублей</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.3s</span>
+    </div>
+    <div class="pick-text">перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0023.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">02:22.760</code> — <code class="tc-copy" title="Click to copy">02:29.040</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:02:22:18</code> — <code class="tc-copy" title="Click to copy">00:02:28:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <h4>Сценарий (как услышит зритель):</h4>
+  <div class="script"><span class="sp-name">Ольга Грицай:</span> "В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха."<br><br><span class="sp-name">Ольга Грицай:</span> "Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией."<br><br><span class="sp-name">Ольга Грицай:</span> "И наш фонд за 5 лет оказал помощь в реабилитации более 140 детей по реабилитации после кохлярной имплантации."<br><br><span class="sp-name">Ольга Грицай:</span> "под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь"<br><br><span class="sp-name">Ольга Грицай:</span> "перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100"</div>
+</div>
+
+<div class="variant var-close">
+  <div class="var-head">
+    <div class="var-title">
+      <span class="var-id">E</span>
+      <h3>Длинный · Эмоциональный адресный</h3>
+    </div>
+    <div class="var-meta">
+      <div class="var-total">42.6s <small>/ 50-60 секунд</small></div>
+      <div class="var-count">5 фрагментов</div>
+    </div>
+  </div>
+  <div class="var-angle">Представились → эмоция/революция → почему важно → адресно помочь → сумма</div>
+
+  <h4>Порядок склейки:</h4>
+  <div class="picks">
+    
+<div class="pick">
+  <div class="pick-num">1</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ① Представление + масштаб</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">14.1s</span>
+    </div>
+    <div class="pick-text">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0022.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">00:15.860</code> — <code class="tc-copy" title="Click to copy">00:29.920</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:00:15:25</code> — <code class="tc-copy" title="Click to copy">00:00:29:26</code></div>
+      <div class="cats-line">Нарративные роли: <i>intro, impact</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">2</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ② Что значит ваша помощь (эмоция)</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">6.9s</span>
+    </div>
+    <div class="pick-text">Благодаря этому мы охватываем не одного ребенка, а сразу нескольких детей, благодаря вашим пожертвованиям.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">03:44.380</code> — <code class="tc-copy" title="Click to copy">03:51.320</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:03:44:04</code> — <code class="tc-copy" title="Click to copy">00:03:51:02</code></div>
+      <div class="cats-line">Нарративные роли: <i>emotional, action</i> · Ключевые слова: <i>appeal, children, emotion</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">3</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ③ Почему это важно</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">10.3s</span>
+    </div>
+    <div class="pick-text">В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-video">video</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">06:25.280</code> — <code class="tc-copy" title="Click to copy">06:35.540</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:06:24:26</code> — <code class="tc-copy" title="Click to copy">00:06:35:04</code></div>
+      <div class="cats-line">Нарративные роли: <i>mission, problem</i> · Ключевые слова: <i>appeal, children, mission</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">4</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ④ Адресный призыв</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">3.5s</span>
+    </div>
+    <div class="pick-text">перейдя по ссылке, определиться с суммой пожертвования.</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">03:07.000</code> — <code class="tc-copy" title="Click to copy">03:10.460</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:03:06:24</code> — <code class="tc-copy" title="Click to copy">00:03:10:08</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+<div class="pick">
+  <div class="pick-num">5</div>
+  <div class="pick-body">
+    <div class="pick-label">▸ ⑤ Сумма</div>
+    <div class="pick-header">
+      <span class="speaker">🎙 Ольга Грицай</span> · <span class='role'>юрист фонда</span>
+      <span class="pick-dur">7.9s</span>
+    </div>
+    <div class="pick-text">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+    <div class="pick-meta">
+      <div><b>Файл:</b> <code>13_Olga_Gritsay_Legal_Rights/RYA-FX3-0024.MP4</code> · <span class="src-A3">A3</span></div>
+      <div><b>Таймкод:</b> <code class="tc-copy" title="Click to copy">01:26.740</code> — <code class="tc-copy" title="Click to copy">01:34.600</code></div>
+      <div><b>Premiere TC:</b> <code class="tc-copy" title="Click to copy">00:01:26:19</code> — <code class="tc-copy" title="Click to copy">00:01:34:15</code></div>
+      <div class="cats-line">Нарративные роли: <i>action, location, amount</i> · Ключевые слова: <i>appeal</i></div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <h4>Сценарий (как услышит зритель):</h4>
+  <div class="script"><span class="sp-name">Ольга Грицай:</span> "Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией."<br><br><span class="sp-name">Ольга Грицай:</span> "Благодаря этому мы охватываем не одного ребенка, а сразу нескольких детей, благодаря вашим пожертвованиям."<br><br><span class="sp-name">Ольга Грицай:</span> "В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха."<br><br><span class="sp-name">Ольга Грицай:</span> "перейдя по ссылке, определиться с суммой пожертвования."<br><br><span class="sp-name">Ольга Грицай:</span> "под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь"</div>
+</div>
+
+
+<h2>📚 Полный каталог кандидатов (топ-60)</h2>
+<p class="subtitle">Для ручной сборки: выбирайте вручную по смыслу и спикеру</p>
+<table>
+  <thead>
+    <tr>
+      <th>Score</th>
+      <th>Dur</th>
+      <th>Спикер · Цитата</th>
+      <th>Категории</th>
+      <th>Источник</th>
+      <th>Таймкод</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+<tr>
+  <td class="score">28.5</td>
+  <td class="dur">6.8s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Выбрать сумму пожертвования, даже 100 рублей, это будет помощь в развитии этих деток.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0023</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:26.320</code><br>
+    <code class="tc-copy" title="click to copy">02:33.120</code>
+    <div class="prem-small">PR: 00:02:26:05<br>PR: 00:02:32:29</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">27.0</td>
+  <td class="dur">7.9s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">под этим видео на сайт фонда правмир выбрать сумму пожертвования даже 100 рублей может оказать помощь</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:26.740</code><br>
+    <code class="tc-copy" title="click to copy">01:34.600</code>
+    <div class="prem-small">PR: 00:01:26:19<br>PR: 00:01:34:15</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">24.0</td>
+  <td class="dur">8.7s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Выбрать сумму пожертвования, даже 100 рублей, может оказать помощь таким детям в прохождении важной и качественной реабилитации.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-emotion">emotion</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:29.820</code><br>
+    <code class="tc-copy" title="click to copy">01:38.500</code>
+    <div class="prem-small">PR: 00:01:29:21<br>PR: 00:01:38:12</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">22.5</td>
+  <td class="dur">6.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">перейти на сайт для оплаты помощи выбрать сумму пожертвования даже 100</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0023</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:22.760</code><br>
+    <code class="tc-copy" title="click to copy">02:29.040</code>
+    <div class="prem-small">PR: 00:02:22:18<br>PR: 00:02:28:26</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">21.0</td>
+  <td class="dur">6.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Часть этих налогов можно направить через договор пожертвования на поддержание программной деятельности фонда,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:56.480</code><br>
+    <code class="tc-copy" title="click to copy">04:02.620</code>
+    <div class="prem-small">PR: 00:03:56:07<br>PR: 00:04:02:11</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">21.0</td>
+  <td class="dur">9.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">И наш фонд за 5 лет оказал помощь в реабилитации более 140 детей по реабилитации после кохлярной имплантации.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0022</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:27.600</code><br>
+    <code class="tc-copy" title="click to copy">01:37.200</code>
+    <div class="prem-small">PR: 00:01:27:15<br>PR: 00:01:37:03</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">21.0</td>
+  <td class="dur">7.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">И наш фонд за 5 лет уже оказал более 140 детям помощь в реабилитации после кохлярной имплантации.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0022</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:01.120</code><br>
+    <code class="tc-copy" title="click to copy">02:08.200</code>
+    <div class="prem-small">PR: 00:02:00:29<br>PR: 00:02:08:02</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">21.0</td>
+  <td class="dur">6.9s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Благодаря этому мы охватываем не одного ребенка, а сразу нескольких детей, благодаря вашим пожертвованиям.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-emotion">emotion</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:44.380</code><br>
+    <code class="tc-copy" title="click to copy">03:51.320</code>
+    <div class="prem-small">PR: 00:03:44:04<br>PR: 00:03:51:02</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">21.0</td>
+  <td class="dur">7.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Если вы хотите помогать таким деткам, у кого проблемы со слухом, вы можете зайти на сайт Фонда правмир, в раздел «Помочь»,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">04:34.200</code><br>
+    <code class="tc-copy" title="click to copy">04:41.760</code>
+    <div class="prem-small">PR: 00:04:33:27<br>PR: 00:04:41:14</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">19.5</td>
+  <td class="dur">9.8s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">и при этом снизить налогооблагаемую базу, потому что данная поддержка будет оформляться через договор пожертвования.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:07.700</code><br>
+    <code class="tc-copy" title="click to copy">03:17.540</code>
+    <div class="prem-small">PR: 00:03:07:15<br>PR: 00:03:17:10</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">19.5</td>
+  <td class="dur">6.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">потому что данная поддержка будет оформляться через договор пожертвования.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:11.340</code><br>
+    <code class="tc-copy" title="click to copy">03:17.500</code>
+    <div class="prem-small">PR: 00:03:11:04<br>PR: 00:03:17:09</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">11.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Нам нужно развернуть эту штуку по-другому немножко. Нам нужно что сделать? Нам нужно, поддерживая... Это что? Значит, вы поддерживаете регион, потому что вы поддерживаете людей в регионе, которые у вас работают.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">08:28.580</code><br>
+    <code class="tc-copy" title="click to copy">08:40.200</code>
+    <div class="prem-small">PR: 00:08:28:02<br>PR: 00:08:39:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">8.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Добрый день, меня зовут Ларичева Анастасия, я руководитель отдела стратегического развития благотворительного фонда «Правмир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">16:19.220</code><br>
+    <code class="tc-copy" title="click to copy">16:27.700</code>
+    <div class="prem-small">PR: 00:16:18:07<br>PR: 00:16:26:21</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">7.0s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Добрый день! Ларичи Ван Анастасия, руководитель отдела стратегического развития благотворительного фонда «Правмир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">16:03.280</code><br>
+    <code class="tc-copy" title="click to copy">16:10.300</code>
+    <div class="prem-small">PR: 00:16:02:09<br>PR: 00:16:09:09</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">8.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Добрый день, меня зовут Ларичева Анастасия, я руководитель отдела стратегического развития благотворительного фонда «Правмир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">16:19.460</code><br>
+    <code class="tc-copy" title="click to copy">16:27.700</code>
+    <div class="prem-small">PR: 00:16:18:14<br>PR: 00:16:26:21</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">8.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">с нарушением слуха и а после кохлеарной имплантации то есть что такое кохлеарная имплантация давайте мы</div>
+  </td>
+  <td class="cats"><span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:38.820</code><br>
+    <code class="tc-copy" title="click to copy">02:47.140</code>
+    <div class="prem-small">PR: 00:02:38:19<br>PR: 00:02:46:29</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">8.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">мир и наш фонд за пять лет оказал помощь в реабилитации более 140 детей по реабилитации</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0022</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:27.120</code><br>
+    <code class="tc-copy" title="click to copy">01:35.260</code>
+    <div class="prem-small">PR: 00:01:27:00<br>PR: 00:01:35:04</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">10.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">в связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">06:25.420</code><br>
+    <code class="tc-copy" title="click to copy">06:35.540</code>
+    <div class="prem-small">PR: 00:06:25:01<br>PR: 00:06:35:04</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">18.0</td>
+  <td class="dur">10.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">В связи с чем благотворительный фонд Правмир самостоятельно ведет сбор и оплачивает реабилитации в таких центрах для детей с нарушением слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">06:25.280</code><br>
+    <code class="tc-copy" title="click to copy">06:35.540</code>
+    <div class="prem-small">PR: 00:06:24:26<br>PR: 00:06:35:04</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">6.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">И, соответственно, направить средства с налогов на финансирование, на пожертвование благотворительной программы,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:19.220</code><br>
+    <code class="tc-copy" title="click to copy">01:25.820</code>
+    <div class="prem-small">PR: 00:01:19:04<br>PR: 00:01:25:22</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">7.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">и перенаправить средства с налогов на финансирование, на пожертвование благотворительной программы,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:18.700</code><br>
+    <code class="tc-copy" title="click to copy">01:25.840</code>
+    <div class="prem-small">PR: 00:01:18:18<br>PR: 00:01:25:22</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">8.8s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">искать помощь от благотворительных фондов от меценатов каких-то частных организаций которые</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0011</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">04:22.040</code><br>
+    <code class="tc-copy" title="click to copy">04:30.880</code>
+    <div class="prem-small">PR: 00:04:21:23<br>PR: 00:04:30:18</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">6.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">всегда искать варианты помощи от благотворительных фондов частных организаций работодателей вашей</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0011</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">05:15.720</code><br>
+    <code class="tc-copy" title="click to copy">05:22.020</code>
+    <div class="prem-small">PR: 00:05:15:12<br>PR: 00:05:21:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">6.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">ассистент здоровья это как раз таки наша программа фонда благотворительного фонда</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0014</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">04:38.600</code><br>
+    <code class="tc-copy" title="click to copy">04:44.660</code>
+    <div class="prem-small">PR: 00:04:38:09<br>PR: 00:04:44:11</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">6.4s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">а так как эта программа фонда и мы существуем только за счет пожертвований</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0014</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">07:20.240</code><br>
+    <code class="tc-copy" title="click to copy">07:26.640</code>
+    <div class="prem-small">PR: 00:07:19:23<br>PR: 00:07:26:05</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.5</td>
+  <td class="dur">7.4s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">нарушением слуха любая сумма может оказать помощь в реабилитации детей с нарушением</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0025</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">00:27.440</code><br>
+    <code class="tc-copy" title="click to copy">00:34.820</code>
+    <div class="prem-small">PR: 00:00:27:12<br>PR: 00:00:34:23</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">16.0</td>
+  <td class="dur">10.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">любая сумма может оказать помощь в реабилитации детей с нарушением слуха и ваша помощь неоценимо</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0025</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">00:28.560</code><br>
+    <code class="tc-copy" title="click to copy">00:38.680</code>
+    <div class="prem-small">PR: 00:00:28:15<br>PR: 00:00:38:19</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">8.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Соответственно, направив средства на поддержание развития программы ассистент здоровья, они тем самым поддерживают...</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">06:11.060</code><br>
+    <code class="tc-copy" title="click to copy">06:19.200</code>
+    <div class="prem-small">PR: 00:06:10:20<br>PR: 00:06:18:24</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">5.4s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Ларичева Анастасия, руководитель отдела стратегического развития Благотворительного фонда «Прав.Мир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">15:50.000</code><br>
+    <code class="tc-copy" title="click to copy">15:55.360</code>
+    <div class="prem-small">PR: 00:15:49:01<br>PR: 00:15:54:12</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">6.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Ларичева Анастасия, руководитель отдела стратегического развития Благотворительного фонда «Прав.Мир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">16:03.820</code><br>
+    <code class="tc-copy" title="click to copy">16:10.340</code>
+    <div class="prem-small">PR: 00:16:02:25<br>PR: 00:16:09:11</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">5.0s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Ларичи Ван Анастасия, руководитель отдела стратегического развития благотворительного фонда «Правмир».</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">15:50.280</code><br>
+    <code class="tc-copy" title="click to copy">15:55.320</code>
+    <div class="prem-small">PR: 00:15:49:09<br>PR: 00:15:54:10</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">10.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">пожертвование получается а уже может регулярное пожертвование в месяц определить сам это как</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0014</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">09:00.820</code><br>
+    <code class="tc-copy" title="click to copy">09:11.000</code>
+    <div class="prem-small">PR: 00:09:00:08<br>PR: 00:09:10:13</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">3.8s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">а сразу нескольких детей благодаря вашим пожертвованиям.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-emotion">emotion</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:47.560</code><br>
+    <code class="tc-copy" title="click to copy">03:51.320</code>
+    <div class="prem-small">PR: 00:03:47:09<br>PR: 00:03:51:02</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">5.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Вот, да, то можно перейти на сайт, выбрать историю, выбрать пожертвование.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">04:25.280</code><br>
+    <code class="tc-copy" title="click to copy">04:30.900</code>
+    <div class="prem-small">PR: 00:04:25:00<br>PR: 00:04:30:18</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">5.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Ребенок с нарушением слуха после имплантации слухового аппарата в ушко,</div>
+  </td>
+  <td class="cats"><span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0027</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:09.660</code><br>
+    <code class="tc-copy" title="click to copy">01:14.760</code>
+    <div class="prem-small">PR: 00:01:09:17<br>PR: 00:01:14:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">15.0</td>
+  <td class="dur">5.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Ребенок с нарушением слуха после имплантации слухового аппарата в ушко,</div>
+  </td>
+  <td class="cats"><span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0027</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:09.520</code><br>
+    <code class="tc-copy" title="click to copy">01:14.760</code>
+    <div class="prem-small">PR: 00:01:09:13<br>PR: 00:01:14:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">6.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">которые устанавливают в помощь детям при нарушении слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">20:51.660</code><br>
+    <code class="tc-copy" title="click to copy">20:57.760</code>
+    <div class="prem-small">PR: 00:20:50:12<br>PR: 00:20:56:15</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">5.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">помогает оказывает благотворительность и соответственно вы помогаете большому</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0014</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">08:02.700</code><br>
+    <code class="tc-copy" title="click to copy">08:08.260</code>
+    <div class="prem-small">PR: 00:08:02:06<br>PR: 00:08:07:23</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">6.7s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Обращение в фонд очень большое по реабилитации детей с нарушением слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0021</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:07.740</code><br>
+    <code class="tc-copy" title="click to copy">01:14.440</code>
+    <div class="prem-small">PR: 00:01:07:20<br>PR: 00:01:14:10</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">6.9s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Обращение в фонд очень большое по реабилитации детей с нарушением слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0021</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:07.560</code><br>
+    <code class="tc-copy" title="click to copy">01:14.420</code>
+    <div class="prem-small">PR: 00:01:07:14<br>PR: 00:01:14:10</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">6.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">рублей это будет помощь в развитии этих деток а вы можете также выбрать и любого</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0023</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:29.040</code><br>
+    <code class="tc-copy" title="click to copy">02:35.160</code>
+    <div class="prem-small">PR: 00:02:28:26<br>PR: 00:02:35:00</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">7.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Хорошо. Я думаю, нам нужно знать еще, что это конкретно кому-то помогает, наверное, или как это выглядит, или в общем помогает?</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:43.260</code><br>
+    <code class="tc-copy" title="click to copy">01:50.420</code>
+    <div class="prem-small">PR: 00:01:43:04<br>PR: 00:01:50:09</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">6.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Нужно искать подход, и нужно их развивать с помощью этих специалистов, которые сами, каждый занимается своим делом.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0027</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">08:20.990</code><br>
+    <code class="tc-copy" title="click to copy">08:27.250</code>
+    <div class="prem-small">PR: 00:08:20:14<br>PR: 00:08:26:22</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">5.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Если вы готовы поддержать детей с нарушением слуха,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0027</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">18:42.020</code><br>
+    <code class="tc-copy" title="click to copy">18:47.100</code>
+    <div class="prem-small">PR: 00:18:40:26<br>PR: 00:18:45:29</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.5</td>
+  <td class="dur">5.4s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">может оказать очень большую помощь в реабилитации детей с нарушением слуха.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0027</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">18:54.440</code><br>
+    <code class="tc-copy" title="click to copy">18:59.840</code>
+    <div class="prem-small">PR: 00:18:53:09<br>PR: 00:18:58:21</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">13.0</td>
+  <td class="dur">14.1s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и за 5 лет мы оплатили реабилитацию более 140 детям с кохлярной имплантацией.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0022</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">00:15.860</code><br>
+    <code class="tc-copy" title="click to copy">00:29.920</code>
+    <div class="prem-small">PR: 00:00:15:25<br>PR: 00:00:29:26</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">3.7s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Татьяна Кислякова</div>
+    <div class='role-small'>директор фонда</div>
+    <div class="quote-small">Мы привлекаем, опять же, да, с помощью благотворительных фондов,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">11_Tatyana_Kislyakova_Director_Vision</div>
+    <code class="clip-small">RYA-ZVE1-1669</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:29.680</code><br>
+    <code class="tc-copy" title="click to copy">03:33.340</code>
+    <div class="prem-small">PR: 00:03:29:14<br>PR: 00:03:33:03</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">5.4s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Смысл в том, что организация может пожертвовать любую сумму,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0015</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">00:17.100</code><br>
+    <code class="tc-copy" title="click to copy">00:22.520</code>
+    <div class="prem-small">PR: 00:00:17:02<br>PR: 00:00:22:14</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">6.0s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">Второе, это дополнительная условная плюшка для сотрудников, потому что это действительно помощь и поддержка сотрудникам, которые...</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-A2">A2</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">09:49.220</code><br>
+    <code class="tc-copy" title="click to copy">09:55.200</code>
+    <div class="prem-small">PR: 00:09:48:18<br>PR: 00:09:54:18</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">4.0s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Анастасия Ларичева</div>
+    <div class='role-small'>специалист по фандрайзингу</div>
+    <div class="quote-small">в договор пожертвования на поддержание программы.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">12_Anastasia_Laricheva_Funding</div>
+    <code class="clip-small">RYA-FX3-0016</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">12:47.180</code><br>
+    <code class="tc-copy" title="click to copy">12:51.140</code>
+    <div class="prem-small">PR: 00:12:46:12<br>PR: 00:12:50:11</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">8.0s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">в этом мире и многие не понимают что вроде здоровый ребенок выглядит хорошо какая ему нужна там помощь</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:20.280</code><br>
+    <code class="tc-copy" title="click to copy">01:28.280</code>
+    <div class="prem-small">PR: 00:01:20:05<br>PR: 00:01:28:05</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">8.7s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">в нашей работе благотворительного фонда мы выяснили что очень много людей обращаются по реабилитации</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:35.040</code><br>
+    <code class="tc-copy" title="click to copy">01:43.780</code>
+    <div class="prem-small">PR: 00:01:34:28<br>PR: 00:01:43:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">6.6s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">отличались потому что таким детям зачастую могут поставить задержку развития задержка развития</div>
+  </td>
+  <td class="cats"><span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">01:50.460</code><br>
+    <code class="tc-copy" title="click to copy">01:57.080</code>
+    <div class="prem-small">PR: 00:01:50:10<br>PR: 00:01:56:28</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">8.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Благодаря этому стандарту в состав этих услуг входит определение нуждаемости детей и семей в ранней помощи,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span> <span class="cat cat-children">children</span> <span class="cat cat-emotion">emotion</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0009</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">21:07.500</code><br>
+    <code class="tc-copy" title="click to copy">21:15.960</code>
+    <div class="prem-small">PR: 00:21:06:06<br>PR: 00:21:14:20</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">7.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">дмс вот точно так же вы поддерживаете ассистент здоровья как корпоративная скажем так поддержка</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0014</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">10:20.880</code><br>
+    <code class="tc-copy" title="click to copy">10:28.420</code>
+    <div class="prem-small">PR: 00:10:20:07<br>PR: 00:10:27:23</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">4.2s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">в комплексе с фондом, благотворительным фондом «Правомир» важна,</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0020</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:28.860</code><br>
+    <code class="tc-copy" title="click to copy">03:33.040</code>
+    <div class="prem-small">PR: 00:03:28:19<br>PR: 00:03:32:24</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">12.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Здравствуйте, меня зовут Грицая Ольга Степановна, я руководитель юридической службы фонда Правмир и наш фонд за 5 лет работы... Нет, это неправильно. Не 5 лет работы, мы работаем.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0022</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">00:00.900</code><br>
+    <code class="tc-copy" title="click to copy">00:13.420</code>
+    <div class="prem-small">PR: 00:00:00:26<br>PR: 00:00:13:12</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">8.3s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">Ладно, ладно, ладно. Даже 100 рублей, я тогда так скажу, даже 100 рублей это будет посильный вклад в развитие этих деток.</div>
+  </td>
+  <td class="cats"><span class="cat cat-children">children</span> <span class="cat cat-mission">mission</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0023</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">02:04.500</code><br>
+    <code class="tc-copy" title="click to copy">02:12.840</code>
+    <div class="prem-small">PR: 00:02:04:11<br>PR: 00:02:12:21</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">3.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">перейдя по ссылке, определиться с суммой пожертвования.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-A3">A3</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">03:07.000</code><br>
+    <code class="tc-copy" title="click to copy">03:10.460</code>
+    <div class="prem-small">PR: 00:03:06:24<br>PR: 00:03:10:08</div>
+  </td>
+</tr>
+<tr>
+  <td class="score">12.0</td>
+  <td class="dur">5.5s</td>
+  <td class="text">
+    <div class="speaker-small">🎙 Ольга Грицай</div>
+    <div class='role-small'>юрист фонда</div>
+    <div class="quote-small">для этого подключаются благотворительные фонды, чтобы оплачивать эту реабилитацию.</div>
+  </td>
+  <td class="cats"><span class="cat cat-appeal">appeal</span></td>
+  <td class="src">
+    <div class="scene-small">13_Olga_Gritsay_Legal_Rights</div>
+    <code class="clip-small">RYA-FX3-0024</code>
+    <span class="src-type src-video">video</span>
+  </td>
+  <td class="tc">
+    <code class="tc-copy" title="click to copy">05:38.420</code><br>
+    <code class="tc-copy" title="click to copy">05:43.940</code>
+    <div class="prem-small">PR: 00:05:38:02<br>PR: 00:05:43:17</div>
+  </td>
+</tr>
+  </tbody>
+</table>
+
+<h2>📂 Обработанные сцены</h2>
+<p class="subtitle">05_Yulia_Reznik_Interview, 11_Tatyana_Kislyakova_Director_Vision, 12_Anastasia_Laricheva_Funding, 13_Olga_Gritsay_Legal_Rights</p>
+
+<script>
+document.querySelectorAll('.tc-copy').forEach(el => {
+  el.addEventListener('click', () => {
+    navigator.clipboard.writeText(el.textContent.trim());
+    const orig = el.style.color;
+    el.style.color = 'var(--ok)';
+    setTimeout(() => { el.style.color = orig; }, 500);
+  });
+});
+</script>
+</body>
+</html>
